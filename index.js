@@ -42,7 +42,7 @@ async function run(){
         });
         
         // added service collection
-        app.post('/services', async(req, res) => {
+        app.post('/services', async(req, res) =>{
             const service = req.body;
             const result = serviceCollections.insertOne(service);
             res.send(result); 
@@ -78,9 +78,27 @@ async function run(){
         })
 
 
-        
+        // reviews updated
+        app.put('/reviews/:id',async (req, res) => {
+            const id = req.params.id;
+            const filter = {_id: ObjectId(id)};
+            const user = req.body;
+            const option = {upsert: true};
+            const update = {
+                $set: {
+                    text:user.text
+                }
+            }
+            const result = await reviewCollections.updateOne(filter, update,option)
+            res.send(result)
+        })
 
-        
+        app.get('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const user = await reviewCollections.findOne(query);
+            res.send(user);
+        })
 
 
     }
