@@ -63,7 +63,11 @@ async function run(){
             res.send(reviews);
         })
 
-        
+        app.post('/reviews', async(req, res)=>{
+            const review = req.body;
+            const result = reviewCollections.insertOne(review);
+            res.send(result); 
+        })
 
         
 
