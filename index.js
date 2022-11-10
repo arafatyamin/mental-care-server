@@ -21,6 +21,12 @@ async function run(){
         const serviceCollections = client.db('doctorsPortal').collection('services')
         const reviewCollections = client.db('doctorsPortal').collection('reviews')
 
+        app.post('/jwt', (req, res) => {
+            const user = req.body;
+            const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'})
+            res.send({token}); 
+        })
+
         app.get('/services', async(req, res) =>{
             const query = {};
             const cursor = serviceCollections.find(query);
@@ -51,7 +57,6 @@ async function run(){
 
         // reviews api
         app.get('/reviews', async(req, res) => {
-            console.log(req.query)
             let query = {};
             if(req.query.email){
                 query = {
@@ -82,11 +87,12 @@ async function run(){
         app.put('/reviews/:id',async (req, res) => {
             const id = req.params.id;
             const filter = {_id: ObjectId(id)};
-            const user = req.body;
+            const info = req.body;
+            console.log(req)
             const option = {upsert: true};
             const update = {
                 $set: {
-                    text:user.text
+                    message:info.message
                 }
             }
             const result = await reviewCollections.updateOne(filter, update,option)
