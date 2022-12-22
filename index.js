@@ -4,7 +4,7 @@ const { MongoClient, ServerApiVersion, ObjectId, } = require('mongodb');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 9000;
 
 // middleware
 app.use(cors());
@@ -54,7 +54,6 @@ async function run(){
         app.get('/servicesHome', async(req, res) =>{
             const query = {};
             const cursor = serviceCollections.find(query);
-            console.log(cursor);
             const services = await cursor.toArray();
             const servicesHome = services.reverse();
             res.send(servicesHome)
@@ -78,7 +77,6 @@ async function run(){
         // reviews api
         app.get('/reviews', verifyJWT, async(req, res) => {
             const decoded = req.decoded;
-            console.log('inside orders api', decoded);
             if(decoded.email !== req.query.email) {
                 res.status(403).send({ message: 'unauthorized access' });
             }
